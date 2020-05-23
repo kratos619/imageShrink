@@ -1,0 +1,22 @@
+{
+  "name": "imageshrink",
+  "version": "1.0.0",
+  "description": "shrink image",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "nodemon --exec electron ."
+  },
+  "author": "Gaurav Palaspagar",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^9.0.0",
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "imagemin": "^7.0.1",
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-pngquant": "^8.0.0",
+    "slash": "^3.0.0"
+  }
+}

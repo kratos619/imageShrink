@@ -15,3 +15,14 @@ form.addEventListener('submit', (e) => {
         quality
     });
 });
+
+ipcRenderer.on('image:resize', () => {
+    M.toast({
+        html: `Image resized to ${slider.value}% `
+    });
+});
+ipcRenderer.on('image:resizeError', () => {
+    M.toast({
+        html: `oops something went wrong`
+    });
+});

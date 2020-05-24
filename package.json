@@ -2,21 +2,39 @@
   "name": "imageshrink",
   "version": "1.0.0",
   "description": "shrink image",
+  "productName": "ImageShrink",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "nodemon --exec electron ."
+    "dev": "nodemon --exec electron .",
+    "dist": "electron-builder",
+    "package:asar": "asar pack release-builds/ImageShrink-win32-ia32/resources/app/ release-builds/ImageShrink-win32-ia32/resources/app/app.asar",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"ImageShrink\"",
+    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=false --out=release-builds"
   },
   "author": "Gaurav Palaspagar",
   "license": "MIT",
   "devDependencies": {
+    "asar": "^3.0.3",
     "electron": "^9.0.0",
-    "nodemon": "^2.0.4"
+    "electron-packager": "^14.2.1",
+    "nodemon": "^2.0.4",
+    "electron-builder": "^19.52.1"
   },
   "dependencies": {
     "imagemin": "^7.0.1",
     "imagemin-mozjpeg": "^8.0.0",
     "imagemin-pngquant": "^8.0.0",
     "slash": "^3.0.0"
+  },
+  "build": {
+    "appId": "com.imageshrink.app",
+    "productName": "imageshrink",
+    "target": "NSIS",
+    "nsis": {
+      "oneClick": "false",
+      "allowToChangeInstallationDirectory": "true"
+    }
   }
 }

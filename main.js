@@ -1,13 +1,14 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const path = require('path');
 const os = require('os');
 
 const imagemin = require('imagemin');
 const slash = require('slash');
 const imageminmozjpeg = require('imagemin-mozjpeg');
+const imageminPngquant = require('imagemin-pngquant');
 
 //set env
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = 'production';
 
 const isDev = process.env.NODE_ENV !== 'production' ? true : false;
 const isMac = process.platform !== 'darwin' ? false : true;
@@ -20,7 +21,6 @@ function createMainWindow() {
         title: 'ImageShrink',
         width: isDev ? 900 : 500,
         height: 600,
-        icon: './app/icons/Icon_256x256.png',
         resizable: isDev ? true : false,
         backgroundColor: "white",
         webPreferences: {
@@ -37,7 +37,6 @@ function createAboutWindow() {
         title: 'AboutUs',
         width: 400,
         height: 400,
-        icon: './app/icons/Icon_256x256.png',
         resizable: isDev ? true : false
     });
     aboutWindow.loadFile('./app/about.html');
@@ -100,8 +99,28 @@ app.on('activate', () => {
 
 ipcMain.on('image:resize', (e, options) => {
     console.log(e);
-    console.log(options.dist);
-
-    console.log(options.quality);
+    options.dist = path.join(os.homedir(), 'imageshrink');
+    makeImageResize(options);
 });
 
+
+async function makeImageResize({ dist, imgPath, quality }) {
+    try {
+        let pngquality = quality / 100;
+        const file = await imagemin([slash(imgPath)], {
+            destination: dist,
+            plugins: [
+                imageminmozjpeg({
+                    quality
+                }),
+                imageminPngquant({
+                    quality: [pngquality, pngquality]
+                })
+            ]
+        });
+        shell.openExternal(dist);
+        mainWindow.webContents.send('image:resize');
+    } catch (error) {
+        mainWindow.webContents.send('image:resizeError');
+    }
+}
